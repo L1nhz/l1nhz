@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L1nh — ~/portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0c0c0c;
+      --panel: #111111;
+      --border: #2a2a2a;
+      --text: #eaeaea;
+      --muted: #8a8a8a;
+      --accent: #f59e0b;
+      --green: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.6;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    /* TOPBAR */
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 6px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 10;
+    }
+
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .dots span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border: 1px solid #555;
+      margin-right: 3px;
+    }
+
+    .dots span.active {
+      background: #fff;
+      border-color: #fff;
+    }
+
+    .tab-btn {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 2px 7px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .actions button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .actions button:hover {
+      color: #fff;
+    }
+
+    #musicToggle.playing {
+      color: var(--green);
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-child {
+      border-bottom: none;
+    }
+
+    .cmd {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .cmd .user {
+      color: var(--muted);
+    }
+
+    .cmd .arg {
+      color: var(--accent);
+    }
+
+    .comment {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    /* AVATAR */
+
+    .avatar-box {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .avatar-box::before,
+    .avatar-box::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: #fff;
+      border-style: solid;
+    }
+
+    .avatar-box::before {
+      top: 0;
+      left: 0;
+      border-width: 2px 0 0 2px;
+    }
+
+    .avatar-box::after {
+      bottom: 0;
+      right: 0;
+      border-width: 0 2px 2px 0;
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(115%);
+      display: block;
+    }
+
+    .render-status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .render-status span {
+      color: var(--green);
+    }
+
+    /* NAME */
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 12px;
+      height: 26px;
+      background: #fff;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .status-badge .sq {
+      width: 8px;
+      height: 8px;
+      background: #f43f5e;
+    }
+
+    /* JSON */
+
+    .json-box {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      padding: 16px;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .json-line {
+      margin-bottom: 4px;
+    }
+
+    .json-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .j-key {
+      color: #93c5fd;
+    }
+
+    .j-str {
+      color: #fde68a;
+    }
+
+    .j-num {
+      color: #86efac;
+    }
+
+    .j-punct {
+      color: var(--muted);
+    }
+
+    /* SOCIALS */
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .social-card:hover {
+      border-color: #fff;
+      background: #171717;
+    }
+
+    .social-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .social-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .social-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .social-handle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .social-arrow {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+
+      section {
+        padding: 20px 14px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .topbar {
+        padding: 12px 9px;
+        gap: 4px;
+      }
+
+      .tabs {
+        gap: 5px;
+      }
+
+      .actions {
+        gap: 7px;
+      }
+
+      .actions button {
+        font-size: 10px;
+      }
+
+      .tab-btn {
+        padding: 2px 5px;
+      }
+
+      .dots span {
+        width: 8px;
+        height: 8px;
+        margin-right: 1px;
+      }
+    }
+
+    @media print {
+      .topbar {
+        display: none;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .container {
+        border: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+      <div class="tabs">
+        <div class="dots">
+          <span></span>
+          <span></span>
+          <span class="active"></span>
+        </div>
+
+        <a href="#whoami" class="tab-btn active">0</a>
+        <a href="#profile" class="tab-btn">1</a>
+        <a href="#socials" class="tab-btn">2</a>
+      </div>
+
+      <div class="actions">
+        <button onclick="window.print()">[ print ]</button>
+        <button id="musicToggle" type="button">[ music: OFF ]</button>
+      </div>
+
+    </div>
+
+    <!-- MUSIC -->
+    <audio id="backgroundMusic" loop preload="none">
+      <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- WHOAMI -->
+    <section id="whoami">
+
+      <div class="cmd">
+        <span class="user">guest@l1nhz:~$</span>
+        whoami
+        <span class="arg">--verbose</span>
+      </div>
+
+      <div class="comment"># identity</div>
+
+      <div class="avatar-box">
+        <img src="avatar.jpg" alt="L1nh Avatar">
+      </div>
+
+      <div class="render-status">
+        avatar.jpg · <span>RENDER_OK</span>
+      </div>
+
+      <h1>L1nh<span class="cursor"></span></h1>
+
+      <p class="tagline">
+        @l1nhz · 19 years · Vietnamese
+      </p>
+
+      <div class="status-badge">
+        <span class="sq"></span>
+        STATUS: IN_A_RELATIONSHIP
+      </div>
+
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile">
+
+      <div class="cmd">
+        <span class="user">guest@l1nhz:~$</span>
+        cat
+        <span class="arg">./profile.json</span>
+      </div>
+
+      <div class="comment"># personal information</div>
+
+      <div class="json-box">
+
+        <div class="json-line">
+          <span class="j-punct">{</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"name"</span><span class="j-punct">:</span>
+          <span class="j-str">"L1nh"</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"handle"</span><span class="j-punct">:</span>
+          <span class="j-str">"@l1nhz"</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"age"</span><span class="j-punct">:</span>
+          <span class="j-num">19</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"sex"</span><span class="j-punct">:</span>
+          <span class="j-str">"Male"</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"birthday"</span><span class="j-punct">:</span>
+          <span class="j-str">"28/08/2007"</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"relationship"</span><span class="j-punct">:</span>
+          <span class="j-str">"In a relationship"</span><span class="j-punct">,</span>
+        </div>
+
+        <div class="json-line">
+          &nbsp;&nbsp;<span class="j-key">"languages"</span><span class="j-punct">: [</span>
+          <span class="j-str">"Vietnamese"</span><span class="j-punct">,</span>
+          <span class="j-str">"Chinese"</span><span class="j-punct">,</span>
+          <span class="j-str">"English"</span><span class="j-punct">]</span>
+        </div>
+
+        <div class="json-line">
+          <span class="j-punct">}</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SOCIALS -->
+    <section id="socials">
+
+      <div class="cmd">
+        <span class="user">guest@l1nhz:~$</span>
+        ls
+        <span class="arg">-la ./socials</span>
+      </div>
+
+      <div class="comment"># connect with me</div>
+
+      <div class="social-grid">
+
+        <!-- TIKTOK -->
+        <a href="https://tiktok.com/@iuupmdquaa"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="social-card">
+
+          <div class="social-left">
+
+            <span class="social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+              </svg>
+            </span>
+
+            <div>
+              <div class="social-name">TikTok</div>
+              <div class="social-handle">@iuupmdquaa</div>
+            </div>
+
+          </div>
+
+          <span class="social-arrow">[ open &rarr; ]</span>
+
+        </a>
+
+        <!-- TIKTOK GAMING -->
+        <a href="https://tiktok.com/@dcmm.cuocdoi"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="social-card">
+
+          <div class="social-left">
+
+            <span class="social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+              </svg>
+            </span>
+
+            <div>
+              <div class="social-name">TikTok Gaming</div>
+              <div class="social-handle">@dcmm.cuocdoi</div>
+            </div>
+
+          </div>
+
+          <span class="social-arrow">[ open &rarr; ]</span>
+
+        </a>
+
+        <!-- INSTAGRAM -->
+        <a href="https://instagram.com/czz71_"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="social-card">
+
+          <div class="social-left">
+
+            <span class="social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </span>
+
+            <div>
+              <div class="social-name">Instagram</div>
+              <div class="social-handle">@czz71_</div>
+            </div>
+
+          </div>
+
+          <span class="social-arrow">[ open &rarr; ]</span>
+
+        </a>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    // Navigation tabs
+    const tabs = document.querySelectorAll('.tab-btn');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Background music
+    const music = document.getElementById('backgroundMusic');
+    const musicToggle = document.getElementById('musicToggle');
+
+    musicToggle.addEventListener('click', async () => {
+
+      if (music.paused) {
+
+        try {
+          await music.play();
+
+          musicToggle.textContent = '[ music: ON ]';
+          musicToggle.classList.add('playing');
+
+        } catch (error) {
+
+          musicToggle.textContent = '[ music: ERROR ]';
+          console.error('Music playback failed:', error);
+
+        }
+
+      } else {
+
+        music.pause();
+
+        musicToggle.textContent = '[ music: OFF ]';
+        musicToggle.classList.remove('playing');
+
+      }
+
+    });
+
+    music.addEventListener('pause', () => {
+      musicToggle.textContent = '[ music: OFF ]';
+      musicToggle.classList.remove('playing');
+    });
+
+    music.addEventListener('play', () => {
+      musicToggle.textContent = '[ music: ON ]';
+      musicToggle.classList.add('playing');
+    });
+
+  </script>
+
+</body>
+</html>
