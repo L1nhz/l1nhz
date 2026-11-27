@@ -42,6 +42,206 @@
       padding: 16px;
     }
 
+    /* SYSTEM INTRO */
+
+    body.system-loading {
+      overflow: hidden;
+    }
+
+    #systemIntro {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+
+    #systemIntro.exit {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .system-window {
+      width: 100%;
+      max-width: 720px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    .system-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .system-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .system-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .system-dots span {
+      width: 9px;
+      height: 9px;
+      border: 1px solid #555;
+    }
+
+    .system-version {
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .system-content {
+      padding: 24px 20px;
+    }
+
+    .system-title {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .system-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    #systemLogs {
+      height: 250px;
+      overflow: hidden;
+      font-size: 11px;
+      line-height: 2;
+      color: #888;
+      overflow-wrap: anywhere;
+    }
+
+    .system-line {
+      animation: systemAppear .2s ease;
+    }
+
+    .system-line .success {
+      color: #d8d8d8;
+    }
+
+    .system-line .dim {
+      color: #555;
+    }
+
+    @keyframes systemAppear {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .system-loading-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 22px;
+      margin-bottom: 9px;
+      color: #777;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    #systemPercent {
+      color: #eaeaea;
+    }
+
+    .system-progress {
+      height: 3px;
+      background: #292929;
+      width: 100%;
+    }
+
+    #systemBar {
+      height: 100%;
+      width: 0%;
+      background: #d0d0d0;
+      transition: width .12s linear;
+    }
+
+    #systemStatus {
+      margin-top: 12px;
+      color: #777;
+      font-size: 10px;
+    }
+
+    #systemEnter {
+      display: none;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: 1px solid #555;
+      background: transparent;
+      color: #eaeaea;
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    #systemEnter:hover {
+      background: #eaeaea;
+      color: #000;
+      border-color: #eaeaea;
+    }
+
+    .system-footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-top: 1px solid var(--border);
+      color: #555;
+      font-size: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .system-content {
+        padding: 18px 14px;
+      }
+
+      #systemLogs {
+        height: 230px;
+        font-size: 10px;
+      }
+
+      .system-header {
+        padding: 12px 9px;
+        font-size: 9px;
+      }
+    }
+
+    /* ORIGINAL PORTFOLIO */
+
     .container {
       max-width: 720px;
       margin: 0 auto;
@@ -388,6 +588,10 @@
     }
 
     @media print {
+      #systemIntro {
+        display: none !important;
+      }
+
       .topbar {
         display: none;
       }
@@ -395,6 +599,7 @@
       body {
         background: #fff;
         color: #000;
+        overflow: visible !important;
       }
 
       .container {
@@ -404,7 +609,69 @@
   </style>
 </head>
 
-<body>
+<body class="system-loading">
+
+  <!-- SYSTEM INTRO -->
+
+  <div id="systemIntro">
+
+    <div class="system-window">
+
+      <div class="system-header">
+
+        <div class="system-header-left">
+          <div class="system-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <span>SYSTEM INITIALIZATION</span>
+        </div>
+
+        <span class="system-version">V2.6</span>
+
+      </div>
+
+      <div class="system-content">
+
+        <div class="system-title">
+          L1NH PORTFOLIO SYSTEM
+        </div>
+
+        <div class="system-subtitle">
+          # initializing environment...
+        </div>
+
+        <div id="systemLogs"></div>
+
+        <div class="system-loading-info">
+          <span>SYSTEM LOADING</span>
+          <span id="systemPercent">0%</span>
+        </div>
+
+        <div class="system-progress">
+          <div id="systemBar"></div>
+        </div>
+
+        <div id="systemStatus">
+          INITIALIZING SYSTEM - PLEASE WAIT...
+        </div>
+
+        <button id="systemEnter" type="button">
+          [ TAP TO ENTER ]
+        </button>
+
+      </div>
+
+      <div class="system-footer">
+        <span>GUEST@L1NHZ:~</span>
+        <span>SESSION INITIALIZING</span>
+      </div>
+
+    </div>
+
+  </div>
 
   <div class="container">
 
@@ -425,13 +692,13 @@
 
       <div class="actions">
         <button onclick="window.print()">[ print ]</button>
-        <button id="musicToggle" type="button">[ music: ON ]</button>
+        <button id="musicToggle" type="button">[ music: OFF ]</button>
       </div>
 
     </div>
 
     <!-- MUSIC -->
-    <audio id="backgroundMusic" loop preload="none">
+    <audio id="backgroundMusic" loop preload="auto">
       <source src="music.mp3" type="audio/mpeg">
     </audio>
 
@@ -626,36 +893,153 @@
   </div>
 
   <!-- JAVASCRIPT -->
+
   <script>
 
+    // SYSTEM INITIALIZATION
+
+    const systemLines = [
+      "> lusilfer-system v2.6 - ready",
+      "> initializing environment...",
+      "> checking system variables... OK",
+      "> loading css modules...",
+      "> css engine initialized... OK",
+      "> loading javascript engine... OK",
+      "> mounting user interface...",
+      "> injecting theme: dark-monochrome",
+      "> font: JetBrains Mono... OK",
+      "> rendering grid background... OK",
+      "> loading avatar.jpg...",
+      "> checking media assets... OK",
+      "> initializing navigation...",
+      "> wiring interactions...",
+      "> navigation handlers registered... OK",
+      "> accessibility audit... PASS",
+      "> contrast check... PASS",
+      "> loading profile.json... OK",
+      "> connecting music engine...",
+      "> music source: music.mp3",
+      "> rendering pipeline... READY",
+      "> warming cache... OK",
+      "> spawning shell: guest@l1nhz",
+      "> all systems operational."
+    ];
+
+    const systemLogs = document.getElementById("systemLogs");
+    const systemPercent = document.getElementById("systemPercent");
+    const systemBar = document.getElementById("systemBar");
+    const systemStatus = document.getElementById("systemStatus");
+    const systemEnter = document.getElementById("systemEnter");
+
+    let progress = 0;
+    let lineIndex = 0;
+    let systemReady = false;
+
+    document.body.classList.add("system-loading");
+
+    // Print terminal lines
+    const logTimer = setInterval(() => {
+
+      if (lineIndex >= systemLines.length) {
+        clearInterval(logTimer);
+        return;
+      }
+
+      const line = document.createElement("div");
+      line.className = "system-line";
+
+      const safeText = systemLines[lineIndex]
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      line.innerHTML = safeText.replace(
+        /\b(OK|PASS|READY)\b/g,
+        '<span class="success">$1</span>'
+      );
+
+      systemLogs.appendChild(line);
+      systemLogs.scrollTop = systemLogs.scrollHeight;
+
+      lineIndex++;
+
+    }, 100);
+
+    // Loading percentage
+    const loadingTimer = setInterval(() => {
+
+      progress += Math.floor(Math.random() * 5) + 3;
+
+      if (progress >= 100) {
+
+        progress = 100;
+
+        clearInterval(loadingTimer);
+
+        systemReady = true;
+
+        systemStatus.textContent =
+          "SYSTEM READY - WAITING FOR USER";
+
+        systemEnter.style.display = "block";
+
+      }
+
+      systemPercent.textContent = progress + "%";
+      systemBar.style.width = progress + "%";
+
+    }, 50);
+
+    // Enter portfolio and play music
+    systemEnter.addEventListener("click", async () => {
+
+      if (!systemReady) return;
+
+      const music = document.getElementById("backgroundMusic");
+
+      try {
+        await music.play();
+      } catch (error) {
+        console.error("Music playback failed:", error);
+      }
+
+      document.getElementById("systemIntro").classList.add("exit");
+
+      document.body.classList.remove("system-loading");
+
+    });
+
     // Navigation tabs
-    const tabs = document.querySelectorAll('.tab-btn');
+    const tabs = document.querySelectorAll(".tab-btn");
 
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+
+      tab.addEventListener("click", () => {
+
+        tabs.forEach(t => t.classList.remove("active"));
+
+        tab.classList.add("active");
+
       });
+
     });
 
     // Background music
-    const music = document.getElementById('backgroundMusic');
-    const musicToggle = document.getElementById('musicToggle');
+    const music = document.getElementById("backgroundMusic");
+    const musicToggle = document.getElementById("musicToggle");
 
-    musicToggle.addEventListener('click', async () => {
+    musicToggle.addEventListener("click", async () => {
 
       if (music.paused) {
 
         try {
-          await music.play();
 
-          musicToggle.textContent = '[ music: ON ]';
-          musicToggle.classList.add('playing');
+          await music.play();
 
         } catch (error) {
 
-          musicToggle.textContent = '[ music: ERROR ]';
-          console.error('Music playback failed:', error);
+          musicToggle.textContent = "[ music: ERROR ]";
+          console.error("Music playback failed:", error);
 
         }
 
@@ -663,21 +1047,22 @@
 
         music.pause();
 
-        musicToggle.textContent = '[ music: OFF ]';
-        musicToggle.classList.remove('playing');
-
       }
 
     });
 
-    music.addEventListener('pause', () => {
-      musicToggle.textContent = '[ music: OFF ]';
-      musicToggle.classList.remove('playing');
+    music.addEventListener("pause", () => {
+
+      musicToggle.textContent = "[ music: OFF ]";
+      musicToggle.classList.remove("playing");
+
     });
 
-    music.addEventListener('play', () => {
-      musicToggle.textContent = '[ music: ON ]';
-      musicToggle.classList.add('playing');
+    music.addEventListener("play", () => {
+
+      musicToggle.textContent = "[ music: ON ]";
+      musicToggle.classList.add("playing");
+
     });
 
   </script>
